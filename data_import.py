@@ -28,13 +28,13 @@ for r in range(sheet.nrows):
         continue
     choices = []
 
-    choices.append(sheet.cell_value(r,1))
-    choices.append(sheet.cell_value(r,2))
-    choices.append(sheet.cell_value(r,3))
-    choices.append(sheet.cell_value(r,4))
-    choices.append(sheet.cell_value(r,5))
+    choices.append(str(sheet.cell_value(r,1)))
+    choices.append(str(sheet.cell_value(r,2)))
+    choices.append(str(sheet.cell_value(r,3)))
+    choices.append(str(sheet.cell_value(r,4)))
+    choices.append(str(sheet.cell_value(r,5)))
 
-    stud_pref[sheet.cell_value(r,0)] = choices
+    stud_pref[str(sheet.cell_value(r,0))] = choices
 
 companySlots = {}
 
@@ -48,10 +48,10 @@ for r in range(sheet2.nrows):
         if sheet2.cell_value(r,c) == "":
             break
 
-        choices.append(sheet2.cell_value(r,c))
+        choices.append(str(sheet2.cell_value(r,c)))
 
-    comp_pref[sheet2.cell_value(r,0)] = choices
-    companySlots[sheet2.cell_value(r,0)] = 1
+    comp_pref[str(sheet2.cell_value(r,0))] = choices
+    companySlots[str(sheet2.cell_value(r,0))] = 1
 
 #print(stud_pref)
 print(comp_pref)
@@ -84,7 +84,7 @@ def matchmaker():
         if companyName not in matched:
              matched[companyName] = list()
     studentRank2 = copy.deepcopy(stud_pref)
-    # companyRank2 = copy.deepcopy(comp_pref)
+    companyRank2 = copy.deepcopy(comp_pref)
     while unmatchedStudents:
         student = unmatchedStudents.pop(0)
         print("%s is on the market" % (student))
@@ -100,7 +100,7 @@ def matchmaker():
                 print("    There's a spot! Now matched: %s and %s" % (student.upper(), company.upper()))
         else:
             # The student proposes to an full company!
-            companyslist = comp_pref[company]
+            companyslist = companyRank2[company]
             for (i, matchedAlready) in enumerate(tempmatch):
                 if companyslist.index(matchedAlready) > companyslist.index(student):
                     # company prefers new student
