@@ -4,16 +4,12 @@
 # http://www.nrmp.org/match-process/match-algorithm/
 # http://www.nber.org/papers/w6963
  
-# From http://rosettacode.org/wiki/Stable_marriage_problem
-# Uses deepcopy to make actual copy of the contents of the dictionary in a new object
-# http://pymotw.com/2/copy/
- 
 import copy
 from collections import defaultdict
 import pandas
 import xlrd
 
-#change to whatever files used by EIF
+#change to files used by EIF
 studentrank_file = ("StudentResults.xlsx")
 companyrank_file = ("student_to_job.xlsx")
 
@@ -114,7 +110,7 @@ def matchmaker():
     return (matched, studentslost)
  
  
- #go through studentslost and see if they are highly ranked than current students matched by a company
+ #go through studentslost array and see if they are highly ranked than current students matched by a company
  #match even if the student hadn't ranked the company
 def check(matched, lostSouls):
     
@@ -134,12 +130,28 @@ def check(matched, lostSouls):
                 break
 
 
-    
- 
-
 (matched, studentslost) = matchmaker()
-print("Check results, modify if needed...")
+# Check results and modify if needed
 check(matched, studentslost)
+
+#Print all the matches
+toPrintMatched = copy.deepcopy(matched)
+for key in toPrintMatched.keys():
+    toPrintMatched[key] = matched[key][0]
 print('\nMatches:')
 print('  ' + ',\n  '.join('%s is matched to %s' % couple
-                          for couple in sorted(matched.items())))
+                          for couple in sorted(toPrintMatched.items())))
+
+# Append the student rank and the company rank to the dictionary values
+# Ex dictionary entry: { 'CompanyName - PositionName': ['StudentName', StudentRank, CompanyRank] }
+for company in matched.keys():
+    student = matched[company][0]
+    cr = companyRank[company].index(student)+1
+    if company in studentRank[student]:
+        sr = studentRank[student].index(company)+1
+    else:
+        sr = 0
+    matched[company].append(sr)
+    matched[company].append(cr) 
+
+#The matched dictionary will be used to output data in the UI
