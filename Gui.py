@@ -110,7 +110,6 @@ class Ui_MainWindow(object):
         self.treeView.setObjectName("treeView")
         self.treeView.header().setVisible(True)
 
-
         ### Button Actions ###
         self.pushButton.clicked.connect(self.setLineText)
         self.pushButton_2.clicked.connect(self.setLineText_2)
@@ -142,11 +141,11 @@ class Ui_MainWindow(object):
             _translate("MainWindow", "Employer Data Set"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
 
-    def addData(self, model, data):
-        model.insertRow(0)
-
-        model.setData(model.index(0, 0), data)
-        model.setData(model.index(0, 1), data)
+    def addData(self, model, data):        
+        for i, j in data.items():
+            model.insertRow(0)
+            model.setData(model.index(0, 0), i)
+            model.setData(model.index(0, 1), j)
 
     def createModel(self, parent):
         model = QStandardItemModel(0, 2)
@@ -164,20 +163,20 @@ class Ui_MainWindow(object):
         Path = App().Msg
         self.lineEdit_2.setText(App().Msg)
         self.employeerDataPath = Path
-        ## Finds Excel path for matcher maker to extract
+        # Finds Excel path for matcher maker to extract
 
         model = self.createModel(self)
         self.treeView.setModel(model)
-        
+
         (matched, studentslost) = self.matchmaker()
-        model.addData(matched)
+        self.addData(model, matched)
 
     def matchmaker(self):
         studentsfree = self.students[:]
         studentslost = []
         matched = {}
         for programName in self.programs:
-            if programName not in matched: 
+            if programName not in matched:
                 matched[programName] = list()
         studentprefers2 = copy.deepcopy(self.studentprefers)
         programprefers2 = copy.deepcopy(self.programprefers)
