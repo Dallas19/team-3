@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/images">
+    <file>../Downloads/triangle-mosaic/triangle-mosaic.png</file>
+    <file>mayor-logo.png</file>
+  </qresource>
+</RCC>
