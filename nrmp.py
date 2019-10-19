@@ -23,6 +23,44 @@ sheet_student = wb_student.sheet_by_index(0)
 wb_company = xlrd.open_workbook(companyrank_file)
 sheet_company = wb_company.sheet_by_index(0)
 
+companyRank = {}
+studentRank = {}
+companySlots = {}
+
+for r in range(sheet_student.nrows):
+    studentChoices = []
+    if r == 0:
+        continue
+    student = str(sheet_student.cell_value(r,0))
+    student.strip()
+    for c in range(1,6):
+        comp = sheet_student.cell_value(r,c)
+        studentChoices.append(comp)
+
+    studentRank[student] = studentChoices
+
+
+for r in range(sheet_company.nrows):
+    companyChoices = []
+    company = sheet_company.cell_value(r,0)
+    if r == 0:
+        continue
+    for c in range(sheet_company.ncols):
+        student = sheet_company.cell_value(r,c)
+        student.strip()
+        if c == 0:
+            continue
+        if student == "":
+            break
+
+        companyChoices.append(student)
+
+    companySlots[company] = 1
+    companyRank[company] = companyChoices
+
+#print(studentRank)
+#print(companyRank)
+
 # #concatenate company name and position name
 # companyColNum = None
 # positionColNum = None
@@ -31,94 +69,66 @@ sheet_company = wb_company.sheet_by_index(0)
 #         companyColNum = c
 #     if sheet2.cellvalue(r, c) == "Position":
 #         positionColNum = c
-    
-
- 
-#TODO:concatenate company name and position name
-studentRank = {
- 'Alex':  ['American', 'Mercy', 'County', 'Mission', 'General', 'Fairview', 'Saint Mark', 'City', 'Deaconess', 'Park'],
- 'Brian':  ['County', 'Deaconess', 'American', 'Fairview', 'Mercy', 'Saint Mark', 'City', 'General', 'Mission', 'Park'],
- 'Cassie':  ['Deaconess', 'Mercy', 'American', 'Fairview', 'City', 'Saint Mark', 'Mission', 'Park', 'County', 'General'],
- 'Dana':  ['Mission', 'Saint Mark', 'Fairview', 'Park', 'Deaconess', 'Mercy', 'General', 'City', 'County', 'American'],
- 'Edward':   ['General', 'Fairview', 'City', 'County', 'Saint Mark', 'Mercy', 'American', 'Mission', 'Deaconess', 'Park'],
- 'Faith': ['City', 'American', 'Fairview', 'Park', 'Mercy', 'Mission', 'County', 'General', 'Deaconess', 'Saint Mark'],
- 'George':  ['Park', 'Mercy', 'Mission', 'City', 'County', 'American', 'Fairview', 'Deaconess', 'General', 'Saint Mark'],
- 'Hannah':  ['American', 'Mercy', 'Deaconess', 'Saint Mark', 'Mission', 'County', 'General', 'City', 'Park', 'Fairview'],
- 'Ian':  ['Park', 'County', 'Fairview', 'Deaconess', 'City', 'American', 'Saint Mark', 'Mission', 'General', 'Mercy'],
- 'Jessica':  ['American', 'Saint Mark', 'General', 'Park', 'Mercy', 'City', 'Fairview', 'County', 'Mission', 'Deaconess']}
-
-#TODO:concatenate company name and position name
-companyRank = {
- 'American':  ['Brian', 'Faith', 'Jessica', 'George', 'Ian', 'Alex', 'Dana', 'Edward', 'Cassie', 'Hannah'],
- 'City':  ['Brian', 'Alex', 'Cassie', 'Faith', 'George', 'Dana', 'Ian', 'Edward', 'Jessica', 'Hannah'],
- 'County': ['Faith', 'Brian', 'Edward', 'George', 'Hannah', 'Cassie', 'Ian', 'Alex', 'Dana', 'Jessica'],
- 'Fairview':  ['Faith', 'Jessica', 'Cassie', 'Alex', 'Ian', 'Hannah', 'George', 'Dana', 'Brian', 'Edward'],
- 'Mercy':  ['Jessica', 'Hannah', 'Faith', 'Dana', 'Alex', 'George', 'Cassie', 'Edward', 'Ian', 'Brian'],
- 'Saint Mark':  ['Brian', 'Alex', 'Edward', 'Ian', 'Jessica', 'Dana', 'Faith', 'George', 'Cassie', 'Hannah'],
- 'Park':  ['Jessica', 'George', 'Hannah', 'Faith', 'Brian', 'Alex', 'Cassie', 'Edward', 'Dana', 'Ian'],
- 'Deaconess': ['George', 'Jessica', 'Brian', 'Alex', 'Ian', 'Dana', 'Hannah', 'Edward', 'Cassie', 'Faith'],
- 'Mission':  ['Ian', 'Cassie', 'Hannah', 'George', 'Faith', 'Brian', 'Alex', 'Edward', 'Jessica', 'Dana'],
- 'General':  ['Edward', 'Hannah', 'George', 'Alex', 'Brian', 'Jessica', 'Cassie', 'Ian', 'Faith', 'Dana']}
-
-companySlots = {
- 'American': 1,
- 'City': 1,
- 'County': 1,
- 'Fairview': 1,
- 'Mercy': 1,
- 'Saint Mark': 2,
- 'Park': 1,
- 'Deaconess': 2,
- 'Mission': 2,
- 'General': 9}
  
 students = list(studentRank.keys())
-companys = list(companyRank.keys())
+companies = list(companyRank.keys())
  
 def matchmaker():
     unmatchedStudents = students[:]
+    #print(unmatchedStudents)
     studentslost = []
     matched = {}
-    for companyName in companys:
+    for companyName in companies:
         if companyName not in matched:
              matched[companyName] = list()
     studentRank2 = copy.deepcopy(studentRank)
-    # companyRank2 = copy.deepcopy(companyRank)
+    companyRank2 = copy.deepcopy(companyRank)
     while unmatchedStudents:
+        print("#######Unmatched Students##########")
+        print(unmatchedStudents)
         student = unmatchedStudents.pop(0)
-        print("%s is on the market" % (student))
+        print("%s is on the market" % (student)) 
         studentRankList = studentRank2[student]
-        print(studentRankList)
-        company = studentRankList.pop(0)
-        print("  %s (company's #%s) is checking out %s (student's #%s)" % (student, (companyRank[company].index(student)+1), company, (studentRank[student].index(company)+1)) )
-        tempmatch = matched.get(company)
-        print(tempmatch)
-        if len(tempmatch) < companySlots.get(company):
-            if student not in matched[company]:
-                matched[company].append(student)
-                print("    There's a spot! Now matched: %s and %s" % (student.upper(), company.upper()))
-        else:
-            # The student proposes to an full company!
-            companyslist = companyRank[company]
-            for (i, matchedAlready) in enumerate(tempmatch):
-                if companyslist.index(matchedAlready) > companyslist.index(student):
-                    # company prefers new student
+        #print(studentRankList)
+        while studentRankList:
+            company = studentRankList.pop(0)
+            print(company)
+            print(companyRank[company])
+            if student in companyRank[company]:
+                print("  %s (company's #%s) is checking out %s (student's #%s)" % (student, (companyRank[company].index(student)+1), company, (studentRank[student].index(company)+1)) )
+                tempmatch = matched.get(company)
+                print("tempmatch")
+                print(tempmatch)
+                if len(tempmatch) < companySlots.get(company):
                     if student not in matched[company]:
-                        matched[company][i] = student
-                        print("  %s dumped %s (company's #%s) for %s (company's #%s)" % (company.upper(), matchedAlready, (companyRank[company].index(matchedAlready)+1), student.upper(), (companyRank[company].index(student)+1)))
-                        if studentRank[matchedAlready]:
-                            # Ex has more companys to try
-                            unmatchedStudents.append(matchedAlready)
-                        else:
-                            studentslost.append(matchedAlready)
+                        matched[company].append(student)
+                        print("    There's a spot! Now matched: %s and %s" % (student.upper(), company.upper()))
+                        break
                 else:
-                    # company still prefers old match
-                    print("  %s would rather stay with %s (their #%s) over %s (their #%s)" % (company, matchedAlready, (companyRank[company].index(matchedAlready)+1), student, (companyRank[company].index(student)+1)))
-                    if studentRankList:
-                        # Look again
-                        unmatchedStudents.append(student)
-                    else:
-                        studentslost.append(student)
+                    # The student proposes to an full company!
+                    companieslist = companyRank2[company]
+                    print(tempmatch)
+                    # [(0, 'Grace'), (1, 'Bob')] enumerate returns the index and element as a tuple from the iterable given
+                    for (i, matchedAlready) in enumerate(tempmatch):
+                        #Check whether the currect position match is lower ranked than the current student
+                        if companieslist.index(matchedAlready) > companieslist.index(student):
+                            # company prefers new student
+                            if student not in matched[company]:
+                                matched[company][i] = student
+                                print("  %s dumped %s (company's #%s) for %s (company's #%s)" % (company.upper(), matchedAlready, (companyRank[company].index(matchedAlready)+1), student.upper(), (companyRank[company].index(student)+1)))
+                                if studentRank[matchedAlready]:
+                                    # Ex has more companies to try
+                                    unmatchedStudents.append(matchedAlready)
+                                else:
+                                    studentslost.append(matchedAlready)
+                        else:
+                            # company still prefers old match
+                            print("  %s would rather stay with %s (their #%s) over %s (their #%s)" % (company, matchedAlready, (companyRank[company].index(matchedAlready)+1), student, (companyRank[company].index(student)+1)))
+                            if studentRankList:
+                                # Look again
+                                unmatchedStudents.append(student)
+                            else:
+                                studentslost.append(student)
     print
     for lostsoul in studentslost:
         print('%s did not match' % lostsoul)
@@ -141,6 +151,7 @@ def check(matched):
             companyNamelikesbetter = companyNamelikes[:companyNamelikes.index(studentName)]
             helikes = studentRank[studentName]
             helikesbetter = helikes[:helikes.index(companyName)]
+            studentscompany = ''
             for student in companyNamelikesbetter:
                 for p in inversematched.keys():
                     if student in inversematched[p]:
@@ -159,13 +170,13 @@ def check(matched):
                           % (companyName, student, studentName, studentscompany))
                     return False
             for company in helikesbetter:
-                companysstudents = matched[company]
+                companystudents = matched[company]
                 companylikes = companyRank[company]
-                for companysstudent in companysstudents:
-                    if companylikes.index(companysstudent) > companylikes.index(studentName):
+                for companystudent in companystudents:
+                    if companylikes.index(companystudent) > companylikes.index(studentName):
                         print("%s and %s like each other better than "
                               "their present match: %s and %s, respectively"
-                              % (studentName, company, companyName, companysstudent))
+                              % (studentName, company, companyName, companystudent))
                         return False
     return True
  
@@ -181,8 +192,8 @@ print('Match stability check PASSED'
       if check(matched) else 'Match stability check FAILED')
  
 print('\n\nSwapping two matches to introduce an error')
-matched[companys[0]], matched[companys[1]] = matched[companys[1]], matched[companys[0]]
-for company in companys[:2]:
+matched[companies[0]], matched[companies[1]] = matched[companies[1]], matched[companies[0]]
+for company in companies[:2]:
     print('  %s is now matched to %s' % (company, matched[company]))
 print
 print('Match stability check PASSED'
