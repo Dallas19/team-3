@@ -205,6 +205,11 @@
     </item>
     <item>
      <property name="text">
+      <string>Position C </string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
       <string/>
      </property>
     </item>
