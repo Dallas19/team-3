@@ -91,20 +91,17 @@ def matchmaker():
         studentRankList = studentRank2[student]
         
         company = studentRankList.pop(0)
-        #print(comp_pref[company])
+        print(comp_pref[company])
 
-        if student in comp_pref[company]:
-            print("YE")
-            print(company)
-            print(comp_pref[company])
-            print("  %s (company's #%s) is checking out %s (student's #%s)" % (student, (comp_pref[company].index(student)+1), company, (comp_pref[student].index(company)+1)) )
-            tempmatch = matched.get(company)
-            print(tempmatch)
 
-            if len(tempmatch) < companySlots.get(company):
-                if student not in matched[company]:
-                    matched[company].append(student)
-                    print("    There's a spot! Now matched: %s and %s" % (student.upper(), company.upper()))
+        print("  %s (company's #%s) is checking out %s (student's #%s)" % (student, (comp_pref[company].index(student)+1), company, (comp_pref[student].index(company)+1)) )
+        tempmatch = matched.get(company)
+        print(tempmatch)
+
+        if len(tempmatch) < companySlots.get(company):
+            if student not in matched[company]:
+                matched[company].append(student)
+                print("    There's a spot! Now matched: %s and %s" % (student.upper(), company.upper()))
 
         else:
             # The student proposes to an full company!
@@ -133,8 +130,6 @@ def matchmaker():
     for lostsoul in studentslost:
         print('%s did not match' % lostsoul)
     return (matched, studentslost)
-
-
 
 
 
