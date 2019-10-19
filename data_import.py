@@ -54,6 +54,7 @@ for r in range(sheet2.nrows):
 
 #print(stud_pref)
 print(comp_pref)
+print(stud_pref)
 
 ##companySlots = {
 ## 'American': 1,
