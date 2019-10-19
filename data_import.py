@@ -17,7 +17,9 @@ comp_pref = {}
 stud_pref = {}
 
 for r in range(sheet.nrows):
-    stuOptions = []
+    if r == 0:
+        continue
+    choices = []
     
     choices.append(sheet.cell_value(r,1))
     choices.append(sheet.cell_value(r,2))
@@ -26,5 +28,6 @@ for r in range(sheet.nrows):
     choices.append(sheet.cell_value(r,5))
                    
     stud_pref[sheet.cell_value(r,0)] = choices
-    print(stud_pref)
+
+print(stud_pref)
 
