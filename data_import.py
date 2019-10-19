@@ -2,7 +2,7 @@
 import pandas
 import xlrd
 
-file_path = ("")
+file_path = ("StudentResults.xlsx")
 
 #Workbook and worksheet setup
 wb = xlrd.open_workbook(file_path)
@@ -17,15 +17,14 @@ comp_pref = {}
 stud_pref = {}
 
 for r in range(sheet.nrows):
-    choices = []
-    choices.append(sheet.cell_value(r,1)
-    choices.append(sheet.cell_value(r,2)
-    choices.append(sheet.cell_value(r,3)
-    choices.append(sheet.cell_value(r,4)
-    choices.append(sheet.cell_value(r,5)
+    stuOptions = []
+    
+    choices.append(sheet.cell_value(r,1))
+    choices.append(sheet.cell_value(r,2))
+    choices.append(sheet.cell_value(r,3))
+    choices.append(sheet.cell_value(r,4))
+    choices.append(sheet.cell_value(r,5))
                    
-    stud_pref[sheet.cell_value(r,0)] = 
-    sheet.cell_value(r,0)
-
-comp{"JP"} = stu
+    stud_pref[sheet.cell_value(r,0)] = choices
+    print(stud_pref)
 
