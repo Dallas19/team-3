@@ -121,19 +121,13 @@ def check(matched, lostSouls):
     modified = False
 
     while True:
-        modified = False
         for company in matched.keys():
+            modified = False
             for i in range(len(lostSouls)):
-                print(companyRank[company])
-                print(lostSouls[i])
                 if lostSouls[i] in companyRank[company]:
-                    print("in comp list")
-                    print(companyRank[company].index(lostSouls[i]))
-                    print(companyRank[company].index(matched[company][0]))
                     if companyRank[company].index(lostSouls[i]) < companyRank[company].index(matched[company][0]):
-                        print("ranker better")
-                        temp = matched.get(company)
-                        matched[company] = lostSouls[i]
+                        temp = matched[company][0]
+                        matched[company] = [lostSouls[i]]
                         lostSouls[i] = temp
                         modified = True
         if not modified:
