@@ -176,8 +176,33 @@
      </rect>
     </property>
     <property name="text">
-     <string>Select student to send job offers </string>
+     <string>Select student(s) to send job offers </string>
     </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>240</y>
+      <width>104</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Select Position</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Position A</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
    </widget>
    <zorder>graphicsView</zorder>
    <zorder>graphicsView_2</zorder>
@@ -191,6 +216,7 @@
    <zorder>verticalScrollBar</zorder>
    <zorder>pushButton_2</zorder>
    <zorder>label</zorder>
+   <zorder>comboBox</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
