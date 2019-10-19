@@ -3,6 +3,7 @@
 ## companye-Shapley algorithm
 # http://www.nrmp.org/match-process/match-algorithm/
 # http://www.nber.org/papers/w6963
+# https://pastebin.com/iQjc88gu
  
 import copy
 from collections import defaultdict
@@ -59,7 +60,6 @@ companies = list(companyRank.keys())
  
 def matchmaker():
     unmatchedStudents = students[:]
-    #print(unmatchedStudents)
     studentslost = []
     matched = {}
     for companyName in companies:
