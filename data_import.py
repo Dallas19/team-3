@@ -34,9 +34,18 @@ for r in range(sheet.nrows):
                    
     stud_pref[sheet.cell_value(r,0)] = choices
 
-for c in range(sheet.ncols):
-    if sheet2.cell_value(0,c) == "Company":
-        print("HELL YAH")
+for r in range(sheet2.nrows):
+    if r == 0:
+        continue
+    for c in range(sheet2.ncols):
+        if c == "":
+            break
+        choices = []
+        
+        choices.append(sheet.cell_value(r,c))
+                       
+        comp_pref[sheet.cell_value(r,0)] = choices
 
-print(stud_pref)
+#print(stud_pref)
+print(comp_pref)
 
