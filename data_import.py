@@ -1,5 +1,4 @@
 #Please download these libs by: Python -m pip install <package>
-import pandas
 import xlrd
 import copy
 from collections import defaultdict
