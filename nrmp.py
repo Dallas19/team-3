@@ -57,18 +57,6 @@ for r in range(sheet_company.nrows):
 
     companySlots[company] = 1
     companyRank[company] = companyChoices
-
-#print(studentRank)
-#print(companyRank)
-
-# #concatenate company name and position name
-# companyColNum = None
-# positionColNum = None
-# for c in range(sheet.ncols):
-#     if sheet2.cell_value(0,c) == "Company":
-#         companyColNum = c
-#     if sheet2.cellvalue(r, c) == "Position":
-#         positionColNum = c
  
 students = list(studentRank.keys())
 companies = list(companyRank.keys())
@@ -129,22 +117,30 @@ def matchmaker():
  #go through studentslost and see if they are highly ranked than current students matched by a company
  #match even if the student hadn't ranked the company
 def check(matched, lostSouls):
+    
     modified = False
 
     while True:
         modified = False
-        for company in matched:
+        for company in matched.keys():
             for i in range(len(lostSouls)):
                 print(companyRank[company])
                 print(lostSouls[i])
                 if lostSouls[i] in companyRank[company]:
-                    if companyRank[company].index(lostSouls[i]) < companyRank[company].index(matched.get(company)):
-                            temp = matched.get(company)
-                            matched[company] = lostSouls[i]
-                            lostSouls[i] = temp
-                            modified = True
-            if not modified:
+                    print("in comp list")
+                    print(companyRank[company].index(lostSouls[i]))
+                    print(companyRank[company].index(matched[company][0]))
+                    if companyRank[company].index(lostSouls[i]) < companyRank[company].index(matched[company][0]):
+                        print("ranker better")
+                        temp = matched.get(company)
+                        matched[company] = lostSouls[i]
+                        lostSouls[i] = temp
+                        modified = True
+        if not modified:
                 break
+
+
+    
  
 
 (matched, studentslost) = matchmaker()
@@ -153,14 +149,3 @@ check(matched, studentslost)
 print('\nMatches:')
 print('  ' + ',\n  '.join('%s is matched to %s' % couple
                           for couple in sorted(matched.items())))
-
-# print('Match stability check PASSED'
-#       if check(matched, studentslost) else 'Match stability check FAILED')
- 
-# print('\n\nSwapping two matches to introduce an error')
-# matched[companies[0]], matched[companies[1]] = matched[companies[1]], matched[companies[0]]
-# for company in companies[:2]:
-#     print('  %s is now matched to %s' % (company, matched[company]))
-# print
-# print('Match stability check PASSED'
-#       if check(matched) else 'Match stability check FAILED')
