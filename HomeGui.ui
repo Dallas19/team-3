@@ -23,6 +23,9 @@
       <height>641</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(:/images/Downloads/triangle-mosaic/triangle-mosaic.png);</string>
+    </property>
    </widget>
    <widget class="QGraphicsView" name="graphicsView_2">
     <property name="geometry">
