@@ -71,7 +71,6 @@ def matchmaker():
         student = unmatchedStudents.pop(0)
         print("%s is available" % (student)) 
         studentRankList = studentRank2[student]
-        #print(studentRankList)
         while studentRankList:
             company = studentRankList.pop(0)
             if student in companyRank[company]:
@@ -132,7 +131,8 @@ def check(matched, lostSouls):
 
 (matched, studentslost) = matchmaker()
 # Check results and modify if needed
-check(matched, studentslost)
+if studentslost:
+    check(matched, studentslost)
 
 #Print all the matches
 toPrintMatched = copy.deepcopy(matched)
