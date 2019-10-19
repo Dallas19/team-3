@@ -151,6 +151,8 @@ class Ui_MainWindow(object):
         self.pushButton_3 = QPushButton(self.frame)
         self.pushButton_3.setGeometry(QRect(850, 0, 131, 28))
         self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.clicked.connect(self.extract)
+
         self.verticalLayout.addWidget(self.frame)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
@@ -195,11 +197,16 @@ class Ui_MainWindow(object):
 
     def addData(self, model, data):
         for i, j in data.items():
+            _translate = QCoreApplication.translate
             model.insertRow(0)
             model.setData(model.index(0, 0), i)
             model.setData(model.index(0, 1), str(j[0]))
             model.setData(model.index(0, 2), str(j[1]))
             model.setData(model.index(0, 3), str(j[2]))
+            self.label_2.setText(_translate("MainWindow", str(len(data))))
+            self.label_6.setText(_translate("MainWindow", str(len(data))))
+            self.label_7.setText(_translate("MainWindow", str(len(data))))
+            self.label_8.setText(_translate("MainWindow", str(0)))
 
     def createModel(self, parent):
         model = QStandardItemModel(0, 4)
@@ -230,9 +237,9 @@ class Ui_MainWindow(object):
         self.wb_company = xlrd.open_workbook(self.companyrank_file)
         self.sheet_company = self.wb_company.sheet_by_index(0)
 
+    def extract(self):
         model = self.createModel(self)
         self.treeView.setModel(model)
-
         self.companyRank = {}
         self.studentRank = {}
         self.companySlots = {}
@@ -284,7 +291,6 @@ class Ui_MainWindow(object):
             matched[self.company].append(cr)
 
         self.addData(model, matched)
-        del Path
 
     def matchmaker(self):
         unmatchedStudents = self.students[:]
