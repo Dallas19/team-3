@@ -10,16 +10,27 @@
  
 import copy
 from collections import defaultdict
+import pandas
 import xlrd
 
-#concatenate company name and position name
-companyColNum = None
-positionColNum = None
-for c in range(sheet.ncols):
-    if sheet2.cell_value(0,c) == "Company":
-        companyColNum = c
-    if sheet2.cellvalue(r, c) == "Position":
-        positionColNum = c
+#change to whatever files used by EIF
+studentrank_file = ("StudentResults.xlsx")
+companyrank_file = ("student_to_job.xlsx")
+
+wb_student = xlrd.open_workbook(studentrank_file)
+sheet_student = wb_student.sheet_by_index(0)
+
+wb_company = xlrd.open_workbook(companyrank_file)
+sheet_company = wb_company.sheet_by_index(0)
+
+# #concatenate company name and position name
+# companyColNum = None
+# positionColNum = None
+# for c in range(sheet.ncols):
+#     if sheet2.cell_value(0,c) == "Company":
+#         companyColNum = c
+#     if sheet2.cellvalue(r, c) == "Position":
+#         positionColNum = c
     
 
  
@@ -72,11 +83,12 @@ def matchmaker():
         if companyName not in matched:
              matched[companyName] = list()
     studentRank2 = copy.deepcopy(studentRank)
-    companyRank2 = copy.deepcopy(companyRank)
+    # companyRank2 = copy.deepcopy(companyRank)
     while unmatchedStudents:
         student = unmatchedStudents.pop(0)
         print("%s is on the market" % (student))
         studentRankList = studentRank2[student]
+        print(studentRankList)
         company = studentRankList.pop(0)
         print("  %s (company's #%s) is checking out %s (student's #%s)" % (student, (companyRank[company].index(student)+1), company, (studentRank[student].index(company)+1)) )
         tempmatch = matched.get(company)
@@ -158,20 +170,20 @@ def check(matched):
     return True
  
  
-# print('\nPlay-by-play:')
-# (matched, studentslost) = matchmaker()
+print('\nPlay-by-play:')
+(matched, studentslost) = matchmaker()
  
-# print('\nCouples:')
-# print('  ' + ',\n  '.join('%s is matched to %s' % couple
-#                           for couple in sorted(matched.items())))
-# print
-# print('Match stability check PASSED'
-#       if check(matched) else 'Match stability check FAILED')
+print('\nCouples:')
+print('  ' + ',\n  '.join('%s is matched to %s' % couple
+                          for couple in sorted(matched.items())))
+print
+print('Match stability check PASSED'
+      if check(matched) else 'Match stability check FAILED')
  
-# print('\n\nSwapping two matches to introduce an error')
-# matched[companys[0]], matched[companys[1]] = matched[companys[1]], matched[companys[0]]
-# for company in companys[:2]:
-#     print('  %s is now matched to %s' % (company, matched[company]))
-# print
-# print('Match stability check PASSED'
-#       if check(matched) else 'Match stability check FAILED')
+print('\n\nSwapping two matches to introduce an error')
+matched[companys[0]], matched[companys[1]] = matched[companys[1]], matched[companys[0]]
+for company in companys[:2]:
+    print('  %s is now matched to %s' % (company, matched[company]))
+print
+print('Match stability check PASSED'
+      if check(matched) else 'Match stability check FAILED')
