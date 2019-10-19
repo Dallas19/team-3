@@ -34,7 +34,6 @@ class App(QWidget):
             self, "QFileDialog.getOpenFileName)", "", "Excel Workbook (*.xlsx)", options=options)
         self.Msg = fileName
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.studentDataPath = ""
@@ -50,7 +49,6 @@ class Ui_MainWindow(object):
             'Hannah':  ['American', 'Mercy', 'Deaconess', 'Saint Mark', 'Mission', 'County', 'General', 'City', 'Park', 'Fairview'],
             'Ian':  ['Park', 'County', 'Fairview', 'Deaconess', 'City', 'American', 'Saint Mark', 'Mission', 'General', 'Mercy'],
             'Jessica':  ['American', 'Saint Mark', 'General', 'Park', 'Mercy', 'City', 'Fairview', 'County', 'Mission', 'Deaconess']}
-
         self.programprefers = {
             'American':  ['Brian', 'Faith', 'Jessica', 'George', 'Ian', 'Alex', 'Dana', 'Edward', 'Cassie', 'Hannah'],
             'City':  ['Brian', 'Alex', 'Cassie', 'Faith', 'George', 'Dana', 'Ian', 'Edward', 'Jessica', 'Hannah'],
@@ -62,7 +60,6 @@ class Ui_MainWindow(object):
             'Deaconess': ['George', 'Jessica', 'Brian', 'Alex', 'Ian', 'Dana', 'Hannah', 'Edward', 'Cassie', 'Faith'],
             'Mission':  ['Ian', 'Cassie', 'Hannah', 'George', 'Faith', 'Brian', 'Alex', 'Edward', 'Jessica', 'Dana'],
             'General':  ['Edward', 'Hannah', 'George', 'Alex', 'Brian', 'Jessica', 'Cassie', 'Ian', 'Faith', 'Dana']}
-
         self.programSlots = {
             'American': 1,
             'City': 1,
@@ -141,11 +138,11 @@ class Ui_MainWindow(object):
             _translate("MainWindow", "Employer Data Set"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
 
-    def addData(self, model, data):        
+    def addData(self, model, data):
         for i, j in data.items():
             model.insertRow(0)
             model.setData(model.index(0, 0), i)
-            model.setData(model.index(0, 1), j)
+            model.setData(model.index(0, 1), str(j))
 
     def createModel(self, parent):
         model = QStandardItemModel(0, 2)
@@ -155,21 +152,23 @@ class Ui_MainWindow(object):
 
     def setLineText(self):
         Path = App().Msg
-
-        self.lineEdit.setText(Path)
+        s, k = os.path.split(Path)
+        self.lineEdit.setText(k)
         self.studentDataPath = Path
+        del Path
 
     def setLineText_2(self):
         Path = App().Msg
-        self.lineEdit_2.setText(App().Msg)
+        s, k = os.path.split(Path)
+        self.lineEdit_2.setText(k)
         self.employeerDataPath = Path
-        # Finds Excel path for matcher maker to extract
+        # Finds Excel path for match maker to extract
 
         model = self.createModel(self)
         self.treeView.setModel(model)
-
         (matched, studentslost) = self.matchmaker()
         self.addData(model, matched)
+        del Path
 
     def matchmaker(self):
         studentsfree = self.students[:]
