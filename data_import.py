@@ -3,10 +3,15 @@ import pandas
 import xlrd
 
 file_path = ("StudentResults.xlsx")
+file_path2 = ("student_to_job.xlsx")
 
-#Workbook and worksheet setup
+#Workbook and worksheet setup for sheet 1
 wb = xlrd.open_workbook(file_path)
-sheet = wb.sheet_by_index(0) 
+sheet = wb.sheet_by_index(0)
+
+#Workbook and worksheet setup for sheet 2
+wb2 = xlrd.open_workbook(file_path2)
+sheet2 = wb2.sheet_by_index(0)
 
 #row,cell
 #row 0 =  column names
@@ -28,6 +33,10 @@ for r in range(sheet.nrows):
     choices.append(sheet.cell_value(r,5))
                    
     stud_pref[sheet.cell_value(r,0)] = choices
+
+for c in range(sheet.ncols):
+    if sheet2.cell_value(0,c) == "Company":
+        print("HELL YAH")
 
 print(stud_pref)
 
