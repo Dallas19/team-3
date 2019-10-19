@@ -72,13 +72,13 @@ students = list(stud_pref.keys())
 companys = list(comp_pref.keys())
 
 
-
 ########################
 
 def matchmaker():
     unmatchedStudents = students[:]
     studentslost = []
     matched = {}
+    tempmatch = []
     for companyName in companys:
         if companyName not in matched:
              matched[companyName] = list()
@@ -89,40 +89,46 @@ def matchmaker():
         student = unmatchedStudents.pop(0)
         print("%s is on the market" % (student))
         studentRankList = studentRank2[student]
-        print(studentRankList)
-        try:
-            company = studentRankList.pop(0)
+        
+        company = studentRankList.pop(0)
+        #print(comp_pref[company])
+
+        if student in comp_pref[company]:
+            print("YE")
+            print(company)
+            print(comp_pref[company])
             print("  %s (company's #%s) is checking out %s (student's #%s)" % (student, (comp_pref[company].index(student)+1), company, (comp_pref[student].index(company)+1)) )
             tempmatch = matched.get(company)
             print(tempmatch)
+
             if len(tempmatch) < companySlots.get(company):
                 if student not in matched[company]:
                     matched[company].append(student)
                     print("    There's a spot! Now matched: %s and %s" % (student.upper(), company.upper()))
-            else:
-                # The student proposes to an full company!
-                companyslist = companyRank2[company]
-                for (i, matchedAlready) in enumerate(tempmatch):
-                    if companyslist.index(matchedAlready) > companyslist.index(student):
-                        # company prefers new student
-                        if student not in matched[company]:
-                            matched[company][i] = student
-                            print("  %s dumped %s (company's #%s) for %s (company's #%s)" % (company.upper(), matchedAlready, (comp_pref[company].index(matchedAlready)+1), student.upper(), (comp_pref[company].index(student)+1)))
-                            if comp_pref[matchedAlready]:
-                                # Ex has more companys to try
-                                unmatchedStudents.append(matchedAlready)
-                            else:
-                                studentslost.append(matchedAlready)
-                    else:
-                        # company still prefers old match
-                        print("  %s would rather stay with %s (their #%s) over %s (their #%s)" % (company, matchedAlready, (comp_pref[company].index(matchedAlready)+1), student, (comp_pref[company].index(student)+1)))
-                        if studentRankList:
-                            # Look again
-                            unmatchedStudents.append(student)
+
+        else:
+            # The student proposes to an full company!
+            companyslist = companyRank2[company]
+            for (i, matchedAlready) in enumerate(tempmatch):
+                if companyslist.index(matchedAlready) > companyslist.index(student):
+                    # company prefers new student
+                    if student not in matched[company]:
+                        matched[company][i] = student
+                        print("  %s dumped %s (company's #%s) for %s (company's #%s)" % (company.upper(), matchedAlready, (comp_pref[company].index(matchedAlready)+1), student.upper(), (comp_pref[company].index(student)+1)))
+                        if comp_pref[matchedAlready]:
+                            # Ex has more companys to try
+                            unmatchedStudents.append(matchedAlready)
                         else:
-                            studentslost.append(student)
-        except:
-            print("YOU THOUGHT")
+                            studentslost.append(matchedAlready)
+                else:
+                    # company still prefers old match
+                    print("  %s would rather stay with %s (their #%s) over %s (their #%s)" % (company, matchedAlready, (comp_pref[company].index(matchedAlready)+1), student, (comp_pref[company].index(student)+1)))
+                    if studentRankList:
+                        # Look again
+                        unmatchedStudents.append(student)
+                    else:
+                        studentslost.append(student)
+                        
     print
     for lostsoul in studentslost:
         print('%s did not match' % lostsoul)
