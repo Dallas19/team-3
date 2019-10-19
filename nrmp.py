@@ -1,6 +1,6 @@
 #!/usr/bin/python
  
-## programe-Shapley algorithm
+## companye-Shapley algorithm
 # http://www.nrmp.org/match-process/match-algorithm/
 # http://www.nber.org/papers/w6963
  
@@ -10,9 +10,32 @@
  
 import copy
 from collections import defaultdict
+import pandas
+import xlrd
+
+#change to whatever files used by EIF
+studentrank_file = ("StudentResults.xlsx")
+companyrank_file = ("student_to_job.xlsx")
+
+wb_student = xlrd.open_workbook(studentrank_file)
+sheet_student = wb_student.sheet_by_index(0)
+
+wb_company = xlrd.open_workbook(companyrank_file)
+sheet_company = wb_company.sheet_by_index(0)
+
+# #concatenate company name and position name
+# companyColNum = None
+# positionColNum = None
+# for c in range(sheet.ncols):
+#     if sheet2.cell_value(0,c) == "Company":
+#         companyColNum = c
+#     if sheet2.cellvalue(r, c) == "Position":
+#         positionColNum = c
+    
+
  
-#Create python dictionary with names as keys, values as list
-studentprefers = {
+#TODO:concatenate company name and position name
+studentRank = {
  'Alex':  ['American', 'Mercy', 'County', 'Mission', 'General', 'Fairview', 'Saint Mark', 'City', 'Deaconess', 'Park'],
  'Brian':  ['County', 'Deaconess', 'American', 'Fairview', 'Mercy', 'Saint Mark', 'City', 'General', 'Mission', 'Park'],
  'Cassie':  ['Deaconess', 'Mercy', 'American', 'Fairview', 'City', 'Saint Mark', 'Mission', 'Park', 'County', 'General'],
@@ -22,9 +45,10 @@ studentprefers = {
  'George':  ['Park', 'Mercy', 'Mission', 'City', 'County', 'American', 'Fairview', 'Deaconess', 'General', 'Saint Mark'],
  'Hannah':  ['American', 'Mercy', 'Deaconess', 'Saint Mark', 'Mission', 'County', 'General', 'City', 'Park', 'Fairview'],
  'Ian':  ['Park', 'County', 'Fairview', 'Deaconess', 'City', 'American', 'Saint Mark', 'Mission', 'General', 'Mercy'],
- #'Ian':  ['Park'],
  'Jessica':  ['American', 'Saint Mark', 'General', 'Park', 'Mercy', 'City', 'Fairview', 'County', 'Mission', 'Deaconess']}
-programprefers = {
+
+#TODO:concatenate company name and position name
+companyRank = {
  'American':  ['Brian', 'Faith', 'Jessica', 'George', 'Ian', 'Alex', 'Dana', 'Edward', 'Cassie', 'Hannah'],
  'City':  ['Brian', 'Alex', 'Cassie', 'Faith', 'George', 'Dana', 'Ian', 'Edward', 'Jessica', 'Hannah'],
  'County': ['Faith', 'Brian', 'Edward', 'George', 'Hannah', 'Cassie', 'Ian', 'Alex', 'Dana', 'Jessica'],
@@ -35,7 +59,8 @@ programprefers = {
  'Deaconess': ['George', 'Jessica', 'Brian', 'Alex', 'Ian', 'Dana', 'Hannah', 'Edward', 'Cassie', 'Faith'],
  'Mission':  ['Ian', 'Cassie', 'Hannah', 'George', 'Faith', 'Brian', 'Alex', 'Edward', 'Jessica', 'Dana'],
  'General':  ['Edward', 'Hannah', 'George', 'Alex', 'Brian', 'Jessica', 'Cassie', 'Ian', 'Faith', 'Dana']}
-programSlots = {
+
+companySlots = {
  'American': 1,
  'City': 1,
  'County': 1,
@@ -47,52 +72,51 @@ programSlots = {
  'Mission': 2,
  'General': 9}
  
-students = sorted(studentprefers.keys())
-programs = sorted(programprefers.keys())
- 
- 
+students = list(studentRank.keys())
+companys = list(companyRank.keys())
  
 def matchmaker():
-    studentsfree = students[:]
+    unmatchedStudents = students[:]
     studentslost = []
     matched = {}
-    for programName in programs:
-        if programName not in matched:
-             matched[programName] = list()
-    studentprefers2 = copy.deepcopy(studentprefers)
-    programprefers2 = copy.deepcopy(programprefers)
-    while studentsfree:
-        student = studentsfree.pop(0)
+    for companyName in companys:
+        if companyName not in matched:
+             matched[companyName] = list()
+    studentRank2 = copy.deepcopy(studentRank)
+    # companyRank2 = copy.deepcopy(companyRank)
+    while unmatchedStudents:
+        student = unmatchedStudents.pop(0)
         print("%s is on the market" % (student))
-        studentslist = studentprefers2[student]
-        program = studentslist.pop(0)
-        print("  %s (program's #%s) is checking out %s (student's #%s)" % (student, (programprefers[program].index(student)+1), program, (studentprefers[student].index(program)+1)) )
-        tempmatch = matched.get(program)
-        if len(tempmatch) < programSlots.get(program):
-            # Program's free
-            if student not in matched[program]:
-                matched[program].append(student)
-                print("    There's a spot! Now matched: %s and %s" % (student.upper(), program.upper()))
+        studentRankList = studentRank2[student]
+        print(studentRankList)
+        company = studentRankList.pop(0)
+        print("  %s (company's #%s) is checking out %s (student's #%s)" % (student, (companyRank[company].index(student)+1), company, (studentRank[student].index(company)+1)) )
+        tempmatch = matched.get(company)
+        print(tempmatch)
+        if len(tempmatch) < companySlots.get(company):
+            if student not in matched[company]:
+                matched[company].append(student)
+                print("    There's a spot! Now matched: %s and %s" % (student.upper(), company.upper()))
         else:
-            # The student proposes to an full program!
-            programslist = programprefers2[program]
+            # The student proposes to an full company!
+            companyslist = companyRank[company]
             for (i, matchedAlready) in enumerate(tempmatch):
-                if programslist.index(matchedAlready) > programslist.index(student):
-                    # Program prefers new student
-                    if student not in matched[program]:
-                        matched[program][i] = student
-                        print("  %s dumped %s (program's #%s) for %s (program's #%s)" % (program.upper(), matchedAlready, (programprefers[program].index(matchedAlready)+1), student.upper(), (programprefers[program].index(student)+1)))
-                        if studentprefers2[matchedAlready]:
-                            # Ex has more programs to try
-                            studentsfree.append(matchedAlready)
+                if companyslist.index(matchedAlready) > companyslist.index(student):
+                    # company prefers new student
+                    if student not in matched[company]:
+                        matched[company][i] = student
+                        print("  %s dumped %s (company's #%s) for %s (company's #%s)" % (company.upper(), matchedAlready, (companyRank[company].index(matchedAlready)+1), student.upper(), (companyRank[company].index(student)+1)))
+                        if studentRank[matchedAlready]:
+                            # Ex has more companys to try
+                            unmatchedStudents.append(matchedAlready)
                         else:
                             studentslost.append(matchedAlready)
                 else:
-                    # Program still prefers old match
-                    print("  %s would rather stay with %s (their #%s) over %s (their #%s)" % (program, matchedAlready, (programprefers[program].index(matchedAlready)+1), student, (programprefers[program].index(student)+1)))
-                    if studentslist:
+                    # company still prefers old match
+                    print("  %s would rather stay with %s (their #%s) over %s (their #%s)" % (company, matchedAlready, (companyRank[company].index(matchedAlready)+1), student, (companyRank[company].index(student)+1)))
+                    if studentRankList:
                         # Look again
-                        studentsfree.append(student)
+                        unmatchedStudents.append(student)
                     else:
                         studentslost.append(student)
     print
@@ -106,42 +130,42 @@ def matchmaker():
  
 def check(matched):
     inversematched = defaultdict(list)
-    for programName in matched.keys():
-        for studentName in matched[programName]:
-            inversematched[programName].append(studentName)
+    for companyName in matched.keys():
+        for studentName in matched[companyName]:
+            inversematched[companyName].append(studentName)
  
-    for programName in matched.keys():
-        for studentName in matched[programName]:
+    for companyName in matched.keys():
+        for studentName in matched[companyName]:
  
-            programNamelikes = programprefers[programName]
-            programNamelikesbetter = programNamelikes[:programNamelikes.index(studentName)]
-            helikes = studentprefers[studentName]
-            helikesbetter = helikes[:helikes.index(programName)]
-            for student in programNamelikesbetter:
+            companyNamelikes = companyRank[companyName]
+            companyNamelikesbetter = companyNamelikes[:companyNamelikes.index(studentName)]
+            helikes = studentRank[studentName]
+            helikesbetter = helikes[:helikes.index(companyName)]
+            for student in companyNamelikesbetter:
                 for p in inversematched.keys():
                     if student in inversematched[p]:
-                        studentsprogram = p
-                studentlikes = studentprefers[student]
+                        studentscompany = p
+                studentlikes = studentRank[student]
                                
                                 ## Not sure if this is correct
                 try:
-                    studentlikes.index(studentsprogram)
+                    studentlikes.index(studentscompany)
                 except ValueError:
                     continue
                                
-                if studentlikes.index(studentsprogram) > studentlikes.index(programName):
+                if studentlikes.index(studentscompany) > studentlikes.index(companyName):
                     print("%s and %s like each other better than "
                           "their present match: %s and %s, respectively"
-                          % (programName, student, studentName, studentsprogram))
+                          % (companyName, student, studentName, studentscompany))
                     return False
-            for program in helikesbetter:
-                programsstudents = matched[program]
-                programlikes = programprefers[program]
-                for programsstudent in programsstudents:
-                    if programlikes.index(programsstudent) > programlikes.index(studentName):
+            for company in helikesbetter:
+                companysstudents = matched[company]
+                companylikes = companyRank[company]
+                for companysstudent in companysstudents:
+                    if companylikes.index(companysstudent) > companylikes.index(studentName):
                         print("%s and %s like each other better than "
                               "their present match: %s and %s, respectively"
-                              % (studentName, program, programName, programsstudent))
+                              % (studentName, company, companyName, companysstudent))
                         return False
     return True
  
@@ -157,9 +181,9 @@ print('Match stability check PASSED'
       if check(matched) else 'Match stability check FAILED')
  
 print('\n\nSwapping two matches to introduce an error')
-matched[programs[0]], matched[programs[1]] = matched[programs[1]], matched[programs[0]]
-for program in programs[:2]:
-    print('  %s is now matched to %s' % (program, matched[program]))
+matched[companys[0]], matched[companys[1]] = matched[companys[1]], matched[companys[0]]
+for company in companys[:2]:
+    print('  %s is now matched to %s' % (company, matched[company]))
 print
 print('Match stability check PASSED'
       if check(matched) else 'Match stability check FAILED')
